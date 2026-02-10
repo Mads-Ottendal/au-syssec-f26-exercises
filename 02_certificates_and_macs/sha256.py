@@ -23,8 +23,18 @@ def sha256(message: bytes) -> bytes:
     # initial value of the internal state
     internal_state = b'j\t\xe6g\xbbg\xae\x85<n\xf3r\xa5O\xf5:Q\x0eR\x7f\x9b\x05h\x8c\x1f\x83\xd9\xab[\xe0\xcd\x19'
 
-    # TODO implement this
-    pass
+    padding = build_padding(len(message))
+    padded_message = message + padding
+
+    # split into 512-bit chunks
+    chunks = split_chunks(padded_message)
+
+    # process each chunk
+    state = internal_state
+    for chunk in chunks:
+        state = compress(chunk, state)
+
+    return state
 
 
 def sha256_extend(given_hash: bytes, prefix_length: int, message_suffix: bytes) -> bytes:
@@ -43,7 +53,18 @@ def sha256_extend(given_hash: bytes, prefix_length: int, message_suffix: bytes) 
     assert prefix_length % 64 == 0
 
     # TODO implement this
-    pass
+    total_length = prefix_length + len(message_suffix)
+    padding = build_padding(total_length)
+    padded_message = message_suffix + padding
+
+    #Split into 512-bit chunks
+    chunks = split_chunks(padded_message)
+
+    # process each chunk
+    state = given_hash
+    for chunk in chunks:
+        state = compress(chunk, state)
+    return state
 
 
 def padded_size(message_len: int) -> int:
@@ -65,7 +86,7 @@ def build_padding(message_len: int) -> bytes:
 
 
 def split_chunks(message: bytes) -> list[bytes]:
-    """ Split a message into chunks of 256 bits each."""
+    """ Split a message into chunks of 512 bits each."""
     assert len(message) % 64 == 0
     chunks = []
     for i in range(len(message) // 64):
