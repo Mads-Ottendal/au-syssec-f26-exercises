@@ -1,0 +1,6 @@
+# environment variables:
+AFL_CUSTOM_INFO_PROGRAM=./random_password
+AFL_CUSTOM_INFO_PROGRAM_ARGV=
+AFL_CUSTOM_INFO_OUT=out
+# command line:
+'/opt/homebrew/Cellar/afl++/4.35c_1/libexec/afl-fuzz' '-n' '-i' 'in' '-o' 'out' './random_password'
